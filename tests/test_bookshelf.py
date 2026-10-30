@@ -178,8 +178,11 @@ def test_tc17_delete_book(site):
     site.add_book("Book One", "A", 1)
     site.add_book("Book Two", "B", 2)
     
-    # Click delete on the first book
-    site.rows()[0].find_element(By.CSS_SELECTOR, "button.delete-btn").click()
+    # Wait for the delete buttons to be present and click the first one safely
+    delete_btn = WebDriverWait(site.d, 5).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, "tr.book-row button.delete-btn"))
+    )
+    delete_btn.click()
     
     # Wait explicitly until "Book One" is completely gone from the titles list
     WebDriverWait(site.d, 5).until(lambda d: "Book One" not in site.titles())
