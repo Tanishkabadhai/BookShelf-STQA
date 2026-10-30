@@ -7,7 +7,8 @@ import pytest
 from selenium.webdriver.common.by import By
 
 from helpers import PASSWORD, unique_email
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 pytestmark = pytest.mark.regression
 
 
@@ -173,10 +174,18 @@ def test_tc16_edit_book_updates_author(site):
 
 def test_tc17_delete_book(site):
     """TC17 Deleting a book removes only that book"""
+    
     site.new_logged_in_user()
     site.add_book("Book One", "A", 1)
     site.add_book("Book Two", "B", 2)
-    site.rows()[0].find_element(By.CSS_SELECTOR, "button.delete-btn").click()
+    
+    # Click delete on the first book
+    delete_btn = site.rows()[0].find_element(By.CSS_SELECTOR, "button.delete-btn")
+    delete_btn.click()
+    
+    # Add an explicit wait for the title list to update
+    WebDriverWait(site.d, 5).until(lambda d: len(site.titles()) == 1)
+    
     assert site.titles() == ["Book Two"]
 
 
