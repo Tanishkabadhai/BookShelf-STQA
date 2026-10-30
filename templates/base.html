@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}BookShelf{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect x=%273%27 y=%276%27 width=%277%27 height=%2722%27 rx=%271.5%27 fill=%27%238c3b2a%27/%3E%3Crect x=%2712%27 y=%273%27 width=%277%27 height=%2725%27 rx=%271.5%27 fill=%27%23e9a84c%27/%3E%3Crect x=%2721%27 y=%278%27 width=%277%27 height=%2720%27 rx=%271.5%27 fill=%27%234d6b57%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="backdrop" aria-hidden="true"></div>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <rect x="3" y="6" width="7" height="22" rx="1.5" fill="#8c3b2a"/>
+      <rect x="12" y="3" width="7" height="25" rx="1.5" fill="#e9a84c"/>
+      <rect x="21" y="8" width="7" height="20" rx="1.5" fill="#4d6b57" transform="rotate(8 24.5 18)"/>
+      <rect x="2" y="28" width="28" height="2" rx="1" fill="#f1e4cc"/>
+    </svg>
+    <span class="brand-name">BookShelf</span>
+  </a>
+  {% if session.get('user_id') %}
+  <nav><a id="books-link" href="{{ url_for('books') }}">My books</a>
+       <a id="logout-link" href="{{ url_for('logout') }}">Log out</a></nav>
+  {% endif %}
+</header>
+<main>
+  {% with m = get_flashed_messages(with_categories=true) %}
+    {% if m %}<div id="msg" class="msg {{ m[0][0] }}" role="status">{{ m[0][1] }}</div>{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer id="build">Build: {{ build }}</footer>
+</body>
+</html>

@@ -1,0 +1,459 @@
+{
+  "id": "a163d53d-3176-4380-8818-267c4a2ddf57",
+  "version": "2.0",
+  "name": "BookShelf-IDE",
+  "url": "http://127.0.0.1:5000",
+  "tests": [
+    {
+      "id": "ccc42373-1ad6-40e7-8f10-4a5e9eb49a82",
+      "name": "IDE-01 Register and Login",
+      "commands": [
+        {
+          "id": "7bbc6dca-2f35-499b-970e-ca1a6442557d",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "45421b85-7f3b-4c11-8dfd-5c7dda3cc429",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d1a90713-d4de-4439-8f02-649553589137",
+          "comment": "unique suffix so the email is new on every run",
+          "command": "executeScript",
+          "target": "return Date.now()",
+          "targets": [],
+          "value": "ts"
+        },
+        {
+          "id": "86292e04-f8e6-4921-8fc3-804fd6ff8100",
+          "comment": "",
+          "command": "type",
+          "target": "id=email",
+          "targets": [],
+          "value": "u${ts}@test.com"
+        },
+        {
+          "id": "44bfa4fb-dc1c-40a5-8cee-92808e370cf0",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Secret1"
+        },
+        {
+          "id": "9f6e564a-960f-4373-b03a-2739817476e0",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0961df2a-e026-4ec1-97a4-52c07b76d93c",
+          "comment": "",
+          "command": "assertText",
+          "target": "id=msg",
+          "targets": [],
+          "value": "Registration successful. Please log in."
+        },
+        {
+          "id": "2529fdeb-efd9-4a23-bc13-cd13d5765421",
+          "comment": "",
+          "command": "type",
+          "target": "id=email",
+          "targets": [],
+          "value": "u${ts}@test.com"
+        },
+        {
+          "id": "d6083123-63cc-429b-b562-1d5711d700ec",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Secret1"
+        },
+        {
+          "id": "04325dd8-f65c-45c5-9467-7ab4d0e8a24f",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e606336a-7505-420f-b96a-88a95332d5a9",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=add-link",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "dbd84681-5a81-4250-9787-8f7ffe0ba054",
+      "name": "IDE-02 Add book and case-insensitive search (probe BUG-05)",
+      "commands": [
+        {
+          "id": "16f61677-f5cb-4112-92a7-1651c9250949",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "18af79b8-71c2-4783-9576-c3d07a5bd4f8",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0103a4c1-03b1-4bbd-b3c8-121917db7329",
+          "comment": "unique suffix so the email is new on every run",
+          "command": "executeScript",
+          "target": "return Date.now()",
+          "targets": [],
+          "value": "ts"
+        },
+        {
+          "id": "1b81bcd8-49f5-4134-b388-ca5ed091bf00",
+          "comment": "",
+          "command": "type",
+          "target": "id=email",
+          "targets": [],
+          "value": "u${ts}@test.com"
+        },
+        {
+          "id": "ed68219e-bab1-4d02-9775-f3f1967d6f8b",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Secret1"
+        },
+        {
+          "id": "44bd7383-94d3-4e0c-9412-3e20d8aba2dc",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1ea792fd-c244-4a99-b895-86326987d830",
+          "comment": "",
+          "command": "assertText",
+          "target": "id=msg",
+          "targets": [],
+          "value": "Registration successful. Please log in."
+        },
+        {
+          "id": "3901a904-810e-4f48-8dd2-db6001a7be95",
+          "comment": "",
+          "command": "type",
+          "target": "id=email",
+          "targets": [],
+          "value": "u${ts}@test.com"
+        },
+        {
+          "id": "de0a95e0-3b92-4cd0-a857-02268dc7a979",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Secret1"
+        },
+        {
+          "id": "27cf6127-e098-43ee-a256-dfe472dcde34",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bc587298-ed06-407e-ac51-bc26611f25ac",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=add-link",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c7371d8b-9d8e-4b81-93ca-1834f1bd1271",
+          "comment": "",
+          "command": "click",
+          "target": "id=add-link",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "97d2f669-c133-4fbe-93a4-39c1690fc905",
+          "comment": "",
+          "command": "type",
+          "target": "id=title",
+          "targets": [],
+          "value": "Clean Code"
+        },
+        {
+          "id": "5ff11a3a-4517-4d56-9db9-5c1f7768677b",
+          "comment": "",
+          "command": "type",
+          "target": "id=author",
+          "targets": [],
+          "value": "Robert Martin"
+        },
+        {
+          "id": "30849af3-ba3c-449f-92a2-9897fc792843",
+          "comment": "",
+          "command": "type",
+          "target": "id=copies",
+          "targets": [],
+          "value": "3"
+        },
+        {
+          "id": "87b6093a-cd1a-4c39-b197-cae48117cd93",
+          "comment": "",
+          "command": "click",
+          "target": "id=save-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "90217ce7-9377-4f33-9eb4-1b25f667fb49",
+          "comment": "",
+          "command": "assertText",
+          "target": "css=tr.book-row .col-title",
+          "targets": [],
+          "value": "Clean Code"
+        },
+        {
+          "id": "f2def5cd-2c52-4e1e-bad5-7268560de082",
+          "comment": "",
+          "command": "type",
+          "target": "id=q",
+          "targets": [],
+          "value": "clean code"
+        },
+        {
+          "id": "277c552c-5fd6-4578-9fe2-8be50b00bb3b",
+          "comment": "",
+          "command": "click",
+          "target": "id=search-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e57ecf27-3c9a-490b-9086-acb6721481e8",
+          "comment": "fails on buggy build: search is case-sensitive",
+          "command": "assertText",
+          "target": "css=tr.book-row .col-title",
+          "targets": [],
+          "value": "Clean Code"
+        }
+      ]
+    },
+    {
+      "id": "7f6bb5dc-8cf6-432d-aee1-01a686a9f726",
+      "name": "IDE-03 Invalid email rejected (probe BUG-01)",
+      "commands": [
+        {
+          "id": "85aff8ad-afbd-4b05-a955-24f755f932c8",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "94b98d2a-a4d1-4623-831a-9ae8817db673",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "263076f9-0541-40c5-8ef6-447fcafeb14f",
+          "comment": "",
+          "command": "type",
+          "target": "id=email",
+          "targets": [],
+          "value": "abc"
+        },
+        {
+          "id": "ddc86e77-04eb-4f15-94c0-7cc3a1205620",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Secret1"
+        },
+        {
+          "id": "4f95f55c-a070-451d-b67f-a351046e81af",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8a595ec2-b9ec-4fff-ac22-4da3e2911ec2",
+          "comment": "fails on buggy build: registration succeeds",
+          "command": "assertText",
+          "target": "id=msg",
+          "targets": [],
+          "value": "Enter a valid email address."
+        }
+      ]
+    },
+    {
+      "id": "099db451-f22d-4e29-a5f9-aac499b18e5e",
+      "name": "IDE-04 Logout ends session (probe BUG-07)",
+      "commands": [
+        {
+          "id": "b4477911-d272-4626-b88e-5035c5751b38",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4ecced57-dece-4db2-b488-db1ae0eaf73f",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cbbc7af8-c4ea-43a1-83c6-eed43fc48d78",
+          "comment": "unique suffix so the email is new on every run",
+          "command": "executeScript",
+          "target": "return Date.now()",
+          "targets": [],
+          "value": "ts"
+        },
+        {
+          "id": "7879b929-ee5b-4524-a292-18848731e8fb",
+          "comment": "",
+          "command": "type",
+          "target": "id=email",
+          "targets": [],
+          "value": "u${ts}@test.com"
+        },
+        {
+          "id": "b132a294-54c9-4d64-8358-1851459afd0b",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Secret1"
+        },
+        {
+          "id": "0a7aafe6-9c08-46bc-a8e2-e9abfb5a916c",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5a716490-d925-4bc2-a672-94023be8532f",
+          "comment": "",
+          "command": "assertText",
+          "target": "id=msg",
+          "targets": [],
+          "value": "Registration successful. Please log in."
+        },
+        {
+          "id": "c88f8dea-4ced-416f-8ce7-49b2fe16468f",
+          "comment": "",
+          "command": "type",
+          "target": "id=email",
+          "targets": [],
+          "value": "u${ts}@test.com"
+        },
+        {
+          "id": "bee915f8-9cbb-48da-b5b7-682c5dd6610d",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Secret1"
+        },
+        {
+          "id": "0d36139e-6c84-4ba3-bfe2-444499df35ef",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c80c0ff9-4c70-4f49-98c0-8bf2bd8f7ad0",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=add-link",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1c573d92-c115-4555-a56a-3ded5cfc8efb",
+          "comment": "",
+          "command": "click",
+          "target": "id=logout-link",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e51a0279-c825-4af7-8685-b0949aadc083",
+          "comment": "",
+          "command": "open",
+          "target": "/books",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "56003fc7-77bb-4d1c-93bd-108a093bca1a",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": "fails on buggy build: /books still opens after logout"
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "2b38cab5-2614-4b22-a901-859de096ff38",
+      "name": "Regression",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "ccc42373-1ad6-40e7-8f10-4a5e9eb49a82",
+        "dbd84681-5a81-4250-9787-8f7ffe0ba054",
+        "7f6bb5dc-8cf6-432d-aee1-01a686a9f726",
+        "099db451-f22d-4e29-a5f9-aac499b18e5e"
+      ]
+    }
+  ],
+  "urls": [
+    "http://127.0.0.1:5000/"
+  ],
+  "plugins": []
+}

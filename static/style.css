@@ -1,0 +1,127 @@
+/* BookShelf - candlelit reading-room theme.
+   Palette taken from the reference photos: walnut, candle amber, aged paper, brass.
+   NOTE for testers: only visuals live here. Element ids/classes used by the tests are untouched. */
+:root{
+  --ink:#120b08; --walnut:#241810; --leather:#3b2519;
+  --paper:#f1e4cc; --paper-dim:#c9b79a; --paper-faint:#8f7f66;
+  --candle:#e9a84c; --candle-deep:#c98a2f; --brass:#b98a3e;
+  --ember:#d9623a; --sage:#9bb58a;
+  --panel:rgba(26,16,11,.62); --panel-edge:rgba(233,168,76,.24);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;min-height:100vh;font-family:var(--sans);color:var(--paper);background:var(--ink);line-height:1.5;display:flex;flex-direction:column}
+
+/* ---------- atmosphere: the library photo, dimmed, slowly drifting ---------- */
+.backdrop{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--ink)}
+.backdrop::before{content:"";position:absolute;inset:-4%;background:url("img/library.jpg") center/cover no-repeat;
+  filter:brightness(.5) saturate(.9);animation:drift 46s ease-in-out infinite alternate}
+.backdrop::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 35%,rgba(18,11,8,0) 0%,rgba(18,11,8,.55) 70%,rgba(18,11,8,.92) 100%)}
+@keyframes drift{from{transform:scale(1)}to{transform:scale(1.08) translateX(-1.5%)}}
+@media (prefers-reduced-motion:reduce){.backdrop::before{animation:none}}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  width:min(1080px,calc(100% - 32px));margin:18px auto 0;padding:10px 14px 10px 18px;
+  background:var(--panel);border:1px solid var(--panel-edge);border-radius:999px;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--paper);text-decoration:none}
+.brand svg{width:30px;height:30px;flex:none}
+.brand-name{font-family:var(--serif);font-size:1.35rem;letter-spacing:.02em}
+.topbar nav{display:flex;gap:8px}
+.topbar nav a{white-space:nowrap;color:var(--paper-dim);text-decoration:none;padding:7px 16px;border-radius:999px;border:1px solid transparent;font-size:.92rem}
+.topbar nav a:hover{color:var(--paper);border-color:var(--panel-edge);background:rgba(233,168,76,.08)}
+
+/* ---------- page frame ---------- */
+main{width:min(1080px,calc(100% - 32px));margin:28px auto 0;flex:1}
+footer{width:min(1080px,calc(100% - 32px));margin:28px auto 18px;color:var(--paper-faint);font-size:.78rem;text-align:center}
+
+.msg{margin:0 auto 18px;max-width:640px;padding:12px 18px;border-radius:12px;font-size:.95rem;
+  border:1px solid;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.msg.error{background:rgba(217,98,58,.18);border-color:rgba(217,98,58,.55);color:#ffd9c9}
+.msg.success{background:rgba(155,181,138,.16);border-color:rgba(155,181,138,.5);color:#e1f0d6}
+
+/* ---------- glass panel ---------- */
+.panel{background:var(--panel);border:1px solid var(--panel-edge);border-radius:18px;
+  -webkit-backdrop-filter:blur(16px) saturate(120%);backdrop-filter:blur(16px) saturate(120%);
+  box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,235,200,.08)}
+.panel.card{padding:30px 32px;border-top:3px solid var(--brass)}
+.panel h2{font-family:var(--serif);font-weight:500;font-size:1.7rem;margin:0 0 4px}
+.sub{color:var(--paper-dim);margin:0 0 18px;font-size:.95rem}
+
+/* ---------- auth pages ---------- */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:52px;align-items:center;min-height:calc(100vh - 190px)}
+.display{font-family:var(--serif);font-weight:500;font-size:3.4rem;line-height:1.08;margin:0 0 14px;letter-spacing:-.01em}
+.lede{font-family:var(--serif);font-size:1.15rem;color:var(--paper-dim);max-width:30em;margin:0 0 24px}
+.frame{margin:0;max-width:430px;border-radius:12px;overflow:hidden;border:1px solid var(--panel-edge);box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.frame img{display:block;width:100%;height:auto;filter:saturate(.9)}
+.frame.wide{max-width:520px}
+.frame figcaption{padding:9px 14px;font-size:.82rem;color:var(--paper-dim);background:rgba(18,11,8,.75)}
+.switch{margin:18px 0 0;color:var(--paper-dim);font-size:.92rem}
+.switch a{color:var(--candle)}
+
+/* ---------- forms ---------- */
+label{display:block;margin:16px 0 6px;font-size:.9rem;color:var(--paper-dim)}
+input[type=text],input[type=password]{width:100%;padding:12px 14px;font:inherit;color:var(--paper);
+  background:rgba(10,6,4,.55);border:1px solid rgba(201,183,154,.28);border-radius:10px}
+input::placeholder{color:var(--paper-faint)}
+input:focus{outline:none;border-color:var(--candle);box-shadow:0 0 0 3px rgba(233,168,76,.25)}
+.hint{margin:6px 0 0;font-size:.8rem;color:var(--paper-faint)}
+.actions{display:flex;align-items:center;gap:14px;margin-top:24px}
+
+.btn{display:inline-block;font:inherit;font-weight:600;font-size:.95rem;cursor:pointer;text-decoration:none;
+  padding:11px 22px;border-radius:10px;border:1px solid transparent;color:#2a1706;
+  background:linear-gradient(180deg,var(--candle),var(--candle-deep));box-shadow:0 6px 18px rgba(233,168,76,.22)}
+.btn{width:auto;flex:none}
+.btn:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;color:var(--paper);border-color:rgba(201,183,154,.4);box-shadow:none}
+.btn-ghost:hover{background:rgba(255,235,200,.07)}
+.btn-danger{background:transparent;color:#ffb59c;border-color:rgba(217,98,58,.5);box-shadow:none;padding:6px 14px;font-size:.85rem}
+.btn-danger:hover{background:rgba(217,98,58,.16)}
+.link-quiet{color:var(--paper-dim)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
+
+/* ---------- book list ---------- */
+.collection-head{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--panel-edge);
+  background:linear-gradient(90deg,rgba(18,11,8,.92) 10%,rgba(18,11,8,.35)),url("img/banner.jpg") center/cover;
+  padding:34px 32px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.collection-head h2{font-family:var(--serif);font-weight:500;font-size:2.2rem;margin:0}
+.collection-head p{margin:6px 0 0;color:var(--paper-dim)}
+.toolbar{display:flex;gap:12px;align-items:center;padding:14px;margin:18px 0}
+.toolbar input{flex:1;min-width:0}
+.toolbar .btn{white-space:nowrap}
+
+.shelf{padding:10px 18px 18px;overflow-x:auto}
+table{width:100%;border-collapse:separate;border-spacing:0 8px}
+th{text-align:left;font-weight:600;font-size:.85rem;color:var(--paper-faint);padding:6px 14px}
+td{padding:14px;background:rgba(255,240,215,.05);vertical-align:middle}
+tr.book-row:hover td{background:rgba(233,168,76,.1)}
+td.spine{width:12px;padding:0;border-radius:8px 0 0 8px}
+td:last-child{border-radius:0 8px 8px 0}
+.col-title{font-family:var(--serif);font-size:1.08rem}
+.col-author{color:var(--paper-dim)}
+.col-copies{font-variant-numeric:tabular-nums;width:80px}
+td.row-actions{white-space:nowrap;text-align:right}
+td.row-actions form{display:inline}
+.edit-link{display:inline-block;margin-right:8px;color:var(--candle);text-decoration:none;font-size:.88rem;
+  padding:6px 14px;border:1px solid rgba(233,168,76,.4);border-radius:10px}
+.edit-link:hover{background:rgba(233,168,76,.12)}
+
+.empty-state{display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:center;padding:22px}
+.empty-state img{width:100%;height:auto;border-radius:12px;display:block}
+.empty-state #empty{font-family:var(--serif);font-size:1.5rem;margin:0 0 6px}
+.empty-state p{margin:0 0 14px;color:var(--paper-dim)}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:28px;min-height:0}
+  .display{font-size:2.3rem}
+  .frame{display:none}
+  .topbar{border-radius:20px}
+  .toolbar{flex-wrap:wrap} .toolbar input{flex-basis:100%}
+  .empty-state{grid-template-columns:1fr}
+  .shelf{padding:6px 10px 14px}
+  th:nth-child(3),td.col-author{display:none}
+}

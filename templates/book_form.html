@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ heading }} - BookShelf{% endblock %}
+{% block content %}
+<section style="max-width:560px;margin:0 auto">
+  <div class="panel card">
+    <h2>{{ heading }}</h2>
+    <p class="sub">{% if book %}Change any detail, then save.{% else %}Tell us about the book you want on your shelf.{% endif %}</p>
+    <form method="post" novalidate>
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" value="{{ request.form.get('title', book.title if book else '') }}">
+      <label for="author">Author</label>
+      <input type="text" id="author" name="author" value="{{ request.form.get('author', book.author if book else '') }}">
+      <label for="copies">Copies</label>
+      <input type="text" id="copies" name="copies" value="{{ request.form.get('copies', book.copies if book else '') }}">
+      <p class="hint">A whole number from 1 to 100.</p>
+      <div class="actions">
+        <button type="submit" id="save-btn" class="btn">Save book</button>
+        <a id="cancel-link" class="link-quiet" href="{{ url_for('books') }}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

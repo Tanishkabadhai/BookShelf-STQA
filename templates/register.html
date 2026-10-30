@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Create account - BookShelf{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h2 class="display">Start your own library.</h2>
+    <p class="lede">Add titles, authors and copy counts. Edit or remove them whenever your shelf changes.</p>
+    <figure class="frame wide">
+      <img src="{{ url_for('static', filename='img/banner.jpg') }}" alt="A row of paperback spines on a dark shelf">
+      <figcaption>Every collection starts with one book.</figcaption>
+    </figure>
+  </div>
+  <div class="panel card">
+    <h2>Create your account</h2>
+    <p class="sub">It takes less than a minute.</p>
+    <form method="post" novalidate>
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email" placeholder="you@example.com" autocomplete="username">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="new-password">
+      <p class="hint">Use at least 6 characters.</p>
+      <div class="actions"><button type="submit" id="register-btn" class="btn">Create account</button></div>
+    </form>
+    <p class="switch">Already have an account? <a id="login-link" href="{{ url_for('login') }}">Log in</a></p>
+  </div>
+</section>
+{% endblock %}

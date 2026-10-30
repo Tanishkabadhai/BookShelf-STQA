@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Test output (regenerated on every run)
+.pytest_cache/
+reports/*
+!reports/.gitkeep
+
+# App database (created automatically)
+*.db
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

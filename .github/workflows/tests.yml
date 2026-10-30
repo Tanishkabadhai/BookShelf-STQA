@@ -1,0 +1,64 @@
+name: Selenium regression cycles
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  selenium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir -p reports
+
+      - name: Check that the seeded defects exist only in v1.0 (no browser)
+        run: python verify_modes.py
+
+      - name: Cycle 1 - full suite on buggy build v1.0 (failures are expected)
+        continue-on-error: true
+        env:
+          APP_MODE: buggy
+          REPORT_TAG: cycle1_buggy_full
+        run: python -m pytest --html=reports/cycle1_buggy_full.html --self-contained-html
+
+      - name: Cycle 1 must expose all 8 seeded defects
+        run: |
+          python - <<'PY'
+          import csv
+          rows = list(csv.DictReader(open("reports/bug_log_cycle1_buggy_full.csv")))
+          failed = [r for r in rows if r["outcome"] == "FAILED"]
+          defects = {r["linked_defect"] for r in failed if r["linked_defect"]}
+          print(f"executed={len(rows)} failed={len(failed)} defects={sorted(defects)}")
+          assert len(defects) == 8, "expected all 8 seeded defects to be exposed"
+          unexpected = [r["test_id"] for r in failed if not r["linked_defect"]]
+          assert not unexpected, f"failures not linked to a seeded defect: {unexpected}"
+          PY
+
+      - name: Cycle 2 - retest the failed cases on fixed build v1.1
+        env:
+          APP_MODE: fixed
+          REPORT_TAG: cycle2_fixed_retest
+        run: python -m pytest --lf --html=reports/cycle2_fixed_retest.html --self-contained-html
+
+      - name: Cycle 3 - full regression on fixed build v1.1
+        env:
+          APP_MODE: fixed
+          REPORT_TAG: cycle3_fixed_regression
+        run: python -m pytest --html=reports/cycle3_fixed_regression.html --self-contained-html
+
+      - name: Upload reports and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: reports/
