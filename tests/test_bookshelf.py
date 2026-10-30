@@ -174,17 +174,15 @@ def test_tc16_edit_book_updates_author(site):
 
 def test_tc17_delete_book(site):
     """TC17 Deleting a book removes only that book"""
-    
     site.new_logged_in_user()
     site.add_book("Book One", "A", 1)
     site.add_book("Book Two", "B", 2)
     
     # Click delete on the first book
-    delete_btn = site.rows()[0].find_element(By.CSS_SELECTOR, "button.delete-btn")
-    delete_btn.click()
+    site.rows()[0].find_element(By.CSS_SELECTOR, "button.delete-btn").click()
     
-    # Add an explicit wait for the title list to update
-    WebDriverWait(site.d, 5).until(lambda d: len(site.titles()) == 1)
+    # Wait explicitly until "Book One" is completely gone from the titles list
+    WebDriverWait(site.d, 5).until(lambda d: "Book One" not in site.titles())
     
     assert site.titles() == ["Book Two"]
 
