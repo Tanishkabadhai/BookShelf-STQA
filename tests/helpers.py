@@ -2,7 +2,7 @@
 import time
 import uuid
 
-from selenium.common.exceptions import StaleElementReferenceException, WebDriverException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 PASSWORD = "Secret1"
@@ -31,28 +31,24 @@ class Site:
         self.click_element(self.d.find_element(By.ID, element_id))
 
     def click_element(self, element):
-        """Click, then wait until the browser has finished loading the next page.
+        """Click, then wait until the browser has really loaded the NEXT page.
 
-        Without this wait a test can read the OLD page (race condition = flaky test).
+        Without this wait a test can read the OLD page (a race condition = flaky test, which shows
+        up mostly on slow machines such as CI servers). Method: tag the current page with a JavaScript
+        marker before clicking; the marker only disappears when a brand-new document replaces the page.
         """
-        old_page = self.d.find_element(By.TAG_NAME, "html")
+        self.d.execute_script("window.__pre_click_marker = true;")
         element.click()
-        deadline = time.time() + 5
-        while time.time() < deadline:            # 1) wait for the old page to be replaced
+        deadline = time.time() + 15
+        while time.time() < deadline:
             try:
-                old_page.is_enabled()
-            except StaleElementReferenceException:
-                break
-            except WebDriverException:           # page is mid-navigation
-                time.sleep(0.05)
-                continue
-            time.sleep(0.05)
-        deadline = time.time() + 10
-        while time.time() < deadline:            # 2) wait until the new page is complete
-            try:
-                if self.d.execute_script("return document.readyState") == "complete":
+                new_page_ready = self.d.execute_script(
+                    "return window.__pre_click_marker === undefined"
+                    " && document.readyState === 'complete'"
+                    " && location.href.indexOf('http') === 0;")
+                if new_page_ready:
                     return
-            except WebDriverException:
+            except WebDriverException:     # page is mid-navigation, try again
                 pass
             time.sleep(0.05)
 
