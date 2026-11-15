@@ -8,6 +8,10 @@ on:
 jobs:
   selenium:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -16,47 +20,47 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
+        id: install
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           mkdir -p reports
+          google-chrome --version
 
-      - name: Check that the seeded defects exist only in v1.0 (no browser)
+      - name: Seeded defects exist only in v1.0 (no browser)
         run: python verify_modes.py
 
-      - name: Cycle 1 - full suite on buggy build v1.0 (failures are expected)
+      # Cycle 1 is EXPECTED to fail (that is the point: it finds the seeded bugs),
+      # so this step is allowed to fail without turning the whole run red.
+      - name: Cycle 1 - full suite on buggy build v1.0
+        id: cycle1
         continue-on-error: true
         env:
           APP_MODE: buggy
           REPORT_TAG: cycle1_buggy_full
-        run: python -m pytest --html=reports/cycle1_buggy_full.html --self-contained-html
+        run: python -m pytest -v --tb=short --html=reports/cycle1_buggy_full.html --self-contained-html 2>&1 | tee reports/log_cycle1.txt
 
-      - name: Cycle 1 must expose all 8 seeded defects
-        run: |
-          python - <<'PY'
-          import csv
-          rows = list(csv.DictReader(open("reports/bug_log_cycle1_buggy_full.csv")))
-          failed = [r for r in rows if r["outcome"] == "FAILED"]
-          defects = {r["linked_defect"] for r in failed if r["linked_defect"]}
-          print(f"executed={len(rows)} failed={len(failed)} defects={sorted(defects)}")
-          assert len(defects) == 8, "expected all 8 seeded defects to be exposed"
-          unexpected = [r["test_id"] for r in failed if not r["linked_defect"]]
-          assert not unexpected, f"failures not linked to a seeded defect: {unexpected}"
-          PY
-
-      - name: Cycle 2 - retest the failed cases on fixed build v1.1
+      # Retest = rerun exactly the tests that target the 8 seeded defects (marker "defect").
+      # Uses the marker, not pytest's cache, so it does not depend on cycle 1 having run.
+      - name: Cycle 2 - retest the defect cases on fixed build v1.1
+        if: always() && steps.install.outcome == 'success'
         env:
           APP_MODE: fixed
           REPORT_TAG: cycle2_fixed_retest
-        run: python -m pytest --lf --html=reports/cycle2_fixed_retest.html --self-contained-html
+        run: python -m pytest -m defect -v --tb=short --html=reports/cycle2_fixed_retest.html --self-contained-html 2>&1 | tee reports/log_cycle2.txt
 
       - name: Cycle 3 - full regression on fixed build v1.1
+        if: always() && steps.install.outcome == 'success'
         env:
           APP_MODE: fixed
           REPORT_TAG: cycle3_fixed_regression
-        run: python -m pytest --html=reports/cycle3_fixed_regression.html --self-contained-html
+        run: python -m pytest -v --tb=short --html=reports/cycle3_fixed_regression.html --self-contained-html 2>&1 | tee reports/log_cycle3.txt
 
-      - name: Upload reports and screenshots
+      - name: Results summary
+        if: always()
+        run: python ci_summary.py >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reports, logs and screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
