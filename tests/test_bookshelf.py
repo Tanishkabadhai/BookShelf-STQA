@@ -7,8 +7,7 @@ import pytest
 from selenium.webdriver.common.by import By
 
 from helpers import PASSWORD, unique_email
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
 pytestmark = pytest.mark.regression
 
 
@@ -164,7 +163,7 @@ def test_tc16_edit_book_updates_author(site):
     """TC16 Editing a book saves the changed author and copies"""
     site.new_logged_in_user()
     site.add_book("Clean Code", "Robert Martin", 3)
-    site.d.find_element(By.CSS_SELECTOR, "a.edit-link").click()
+    site.click_element(site.d.find_element(By.CSS_SELECTOR, "a.edit-link"))
     site.fill("author", "R. C. Martin")
     site.fill("copies", "4")
     site.click("save-btn")
@@ -177,16 +176,7 @@ def test_tc17_delete_book(site):
     site.new_logged_in_user()
     site.add_book("Book One", "A", 1)
     site.add_book("Book Two", "B", 2)
-    
-    # Wait for the delete buttons to be present and click the first one safely
-    delete_btn = WebDriverWait(site.d, 5).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "tr.book-row button.delete-btn"))
-    )
-    delete_btn.click()
-    
-    # Wait explicitly until "Book One" is completely gone from the titles list
-    WebDriverWait(site.d, 5).until(lambda d: "Book One" not in site.titles())
-    
+    site.click_element(site.rows()[0].find_element(By.CSS_SELECTOR, "button.delete-btn"))
     assert site.titles() == ["Book Two"]
 
 
