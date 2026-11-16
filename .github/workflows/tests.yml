@@ -5,9 +5,12 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   selenium:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     defaults:
       run:
@@ -27,21 +30,31 @@ jobs:
           mkdir -p reports
           google-chrome --version
 
+      # Shows where every file really is. If a file (for example ci_summary.py) is not next to
+      # app.py, you will see it here.
+      - name: Show repository layout
+        run: find . -maxdepth 2 -not -path './.git/*' -not -path './.git' | sort
+
+      # Catches a copy-paste mistake (missing line, bad indentation) and names the file and line.
+      - name: Check that the Python files are intact
+        run: python -m compileall -q app.py verify_modes.py run_cycles.py tests
+
       - name: Seeded defects exist only in v1.0 (no browser)
         run: python verify_modes.py
 
-      # Cycle 1 is EXPECTED to fail (that is the point: it finds the seeded bugs),
-      # so this step is allowed to fail without turning the whole run red.
-      - name: Cycle 1 - full suite on buggy build v1.0
-        id: cycle1
-        continue-on-error: true
+      # Cycle 1 is SUPPOSED to find failures: they are the 8 seeded bugs.
+      # The step always ends successfully, so these expected failures never turn the run red.
+      - name: Cycle 1 - full suite on buggy build v1.0 (failures are expected)
         env:
           APP_MODE: buggy
           REPORT_TAG: cycle1_buggy_full
-        run: python -m pytest -v --tb=short --html=reports/cycle1_buggy_full.html --self-contained-html 2>&1 | tee reports/log_cycle1.txt
+        run: |
+          set +e
+          python -m pytest -v --tb=short --html=reports/cycle1_buggy_full.html --self-contained-html 2>&1 | tee reports/log_cycle1.txt
+          echo "Cycle 1 finished. Failing tests here are the seeded bugs being found."
+          exit 0
 
       # Retest = rerun exactly the tests that target the 8 seeded defects (marker "defect").
-      # Uses the marker, not pytest's cache, so it does not depend on cycle 1 having run.
       - name: Cycle 2 - retest the defect cases on fixed build v1.1
         if: always() && steps.install.outcome == 'success'
         env:
@@ -58,7 +71,12 @@ jobs:
 
       - name: Results summary
         if: always()
-        run: python ci_summary.py >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          if [ -f ci_summary.py ]; then
+            python ci_summary.py >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "ci_summary.py was not found. Put it in the main folder, next to app.py." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Upload reports, logs and screenshots
         if: always()
